@@ -2,6 +2,7 @@
 
 .vscode
 data/*
+!data/example_dataset.json
 models/*
 
 tmp_*

@@ -66,15 +66,15 @@ if __name__ == '__main__':
     parser.add_argument('--model', choices=['Resnet3D', 'DenseNet3DPPI', 'DenseNet3D'],
                         default='DenseNet3DPPI', help='Backbone of the network')
     parser.add_argument('--datapath', type=str, default='./data/example_dataset/distance', help='Path to tensors')
-    parser.add_argument('-weights', type=str,
+    parser.add_argument('--weights', type=str,
                         default='./models/example_model/20231111-090154/best_model.hdf5')
-    parser.add_argument('-output', type=str, default='./models/example_model/20231111-090154/preds.npy')
-    parser.add_argument('-testset', type=str, default='./data/example_dataset/part_0_test.csv')
+    parser.add_argument('--output', type=str, default='./models/example_model/20231111-090154/preds.npy')
+    parser.add_argument('--testset', type=str, default='./data/example_dataset/part_0_test.csv')
 
-    parser.add_argument('-batch', default=32)
-    parser.add_argument('-alength', default=64)
-    parser.add_argument('-ndims', default=8)
-    parser.add_argument('-seed', default=2032)
+    parser.add_argument('--batch', default=32)
+    parser.add_argument('--alength', default=64)
+    parser.add_argument('--ndims', default=8)
+    parser.add_argument('--seed', default=2032)
     args, unknown = parser.parse_known_args()
 
     main(args)
