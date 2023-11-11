@@ -1,3 +1,7 @@
+*.pyc
+
 .vscode
 data/*
 models/*
+
+tmp_*
