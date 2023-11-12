@@ -44,16 +44,19 @@ def main(args):
                                       verbose=1)
 
     pred = np.array(pred)
-    np.save(args.output, pred)
+    # np.save(args.output, pred)
 
-    predc = np.array([0.5 - i[0] / 2 if i[0] > i[1] else i[1] / 2 + 0.5 for i in pred])
+    pred_score = np.array([0.5 - i[0] / 2 if i[0] > i[1] else i[1] / 2 + 0.5 for i in pred])
+    confidence = np.array([abs(i[0] - i[1]) for i in pred])
+    np.save(args.output, np.array([pred_score, confidence]))
+
     label = np.array([float(i) for i in test_set_csv[1]])
 
-    tn, fp, fn, tp = confusion_matrix(label, predc.round(0)).ravel()
-    fpr, tpr, thresholds_keras = roc_curve(label, predc)
+    tn, fp, fn, tp = confusion_matrix(label, pred_score.round(0)).ravel()
+    fpr, tpr, thresholds_keras = roc_curve(label, pred_score)
     aucc = metrics.auc(fpr, tpr)
 
-    print("accuracy:", round(accuracy_score(label, predc.round(0)), 4))
+    print("accuracy:", round(accuracy_score(label, pred_score.round(0)), 4))
     print("AUC:", round(aucc, 4))
     print("precision:", round(tp / (tp + fp), 4))
     print("recall:", round(tp / (tp + fn), 4))
