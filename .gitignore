@@ -1,7 +1,7 @@
 *.pyc
 
 .vscode
-data/*
+data/*/*
 !data/example_dataset.json
 models/*
 
