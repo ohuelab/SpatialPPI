@@ -10,11 +10,13 @@
 
 Using [Conda](https://www.anaconda.com/):
 
-`conda create -f spatial-ppi.yaml`
-
-Then, activate the environment
-
-`conda activate spatial-ppi`
+```bash
+conda create -n spatial-ppi python=3.9.12
+conda activate spatial-ppi
+conda install tensorflow==2.9.1 scikit-learn==1.1.1 numpy pandas matplotlib
+pip install biopython==1.79 tqdm
+pip install git+https://www.github.com/keras-team/keras-contrib.git
+```
 
 ### Prepare dataset
 
