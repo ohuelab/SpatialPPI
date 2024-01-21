@@ -87,8 +87,7 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model', choices=['Resnet3D', 'DenseNet3DPPI', 'DenseNet3D'],
-                        default='DenseNet3DPPI', help='Backbone of the network')
+    parser.add_argument('--model', choices=['Resnet3D', 'DenseNet3D'], default='DenseNet3D', help='Backbone of the network')
     parser.add_argument('--datapath', type=str, default='./data/example_dataset/distance', help='Path to tensors')
     parser.add_argument('--weights', type=str, default='', help='Continue training based on weights')
     parser.add_argument('--savingPath', type=str, default='./models/example_model', help='Path to save models')
