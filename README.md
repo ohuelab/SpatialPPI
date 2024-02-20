@@ -50,7 +50,7 @@ python train.py \
 --weights [PATH to weights to fine-tuning] \
 --savingPath [PATH to save trained models] \
 --train_set [PATH to train set csv file generated in preprocess] \
---val_set [PATH to validation set csv file generated in preprocess]
+--test_set [PATH to validation set csv file generated in preprocess]
 ```
 
 
@@ -65,7 +65,7 @@ python test.py \
 --datapath [PATH to data tensors] \
 --weights [PATH to weights to fine-tuning] \
 --output [PATH to save prediction results] \
---testset [PATH to test set csv file generated in preprocess]
+--test_set [PATH to test set csv file generated in preprocess]
 ```
 
 
