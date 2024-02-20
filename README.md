@@ -69,7 +69,9 @@ python test.py \
 ```
 
 
+## Resources
 
+The data splits and weights trained from 5-fold cross-validation can be download from [here](https://drive.google.com/file/d/1ovLlK9zz3DYVnphCe_dwRjau_cwxRsUV/view?usp=sharing).
 
 
 ## Citation
