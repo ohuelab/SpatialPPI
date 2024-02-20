@@ -9,7 +9,7 @@ def saveConfig(path, args):
         f.write(f"weights: {args.weights}\n")
         f.write(f"savingPath: {args.savingPath}\n")
         f.write(f"train_set: {args.train_set}\n")
-        f.write(f"val_set: {args.val_set}\n")
+        f.write(f"test_set: {args.test_set}\n")
         f.write(f"augment: {args.augment}\n")
         f.write(f"batch: {args.batch}\n")
         f.write(f"alength: {args.alength}\n")

@@ -14,6 +14,7 @@ Using [Conda](https://www.anaconda.com/):
 conda create -n spatial-ppi python=3.9.12
 conda activate spatial-ppi
 conda install tensorflow==2.9.1 scikit-learn==1.1.1 numpy pandas matplotlib
+conda install -c conda-forge -c bioconda mmseqs2
 pip install biopython==1.79 tqdm
 pip install git+https://www.github.com/keras-team/keras-contrib.git
 ```
@@ -49,8 +50,7 @@ python train.py \
 --weights [PATH to weights to fine-tuning] \
 --savingPath [PATH to save trained models] \
 --train_set [PATH to train set csv file generated in preprocess] \
---val_set [PATH to validation set csv file generated in preprocess] \
---augment [Number of times of augmentation, 0 for off]
+--val_set [PATH to validation set csv file generated in preprocess]
 ```
 
 

@@ -13,8 +13,13 @@ import pandas as pd
 from utils.interface import cal_interface_worker
 from utils.encode import encoding_worker
 from utils.dataset import save_dataset_to_csv
+from utils.cluster import split_by_cluster
+
 
 def main(args):
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+
     # Load dataset
     with open(args.dataset, 'r', encoding="utf-8") as f:
         dataset = json.loads(f.read())
@@ -82,36 +87,7 @@ def main(args):
 
     # split dataset
     if args.split:
-        splited_5 = [[] for _ in range(5)]
-
-        positive = [i for i in dataset if i['type'] == 'positive']
-        negative = [i for i in dataset if i['type'] == 'negative']
-        random.shuffle(positive)
-        random.shuffle(negative)
-
-        for dset in [positive, negative]:
-            for i in range(len(dset)):
-                splited_5[i % 5].append(dset[i])
-        
-        for item in splited_5:
-            random.shuffle(item)
-        
-        for idx in range(5):
-            train = []
-            test = []
-            val = []
-
-            for i in range(5):
-                if idx == i:
-                    test = splited_5[i]
-                elif (idx+1 == i) or (idx == 4 and i == 0):
-                    val = splited_5[i]
-                else:
-                    train.extend(splited_5[i])
-            
-            save_dataset_to_csv(os.path.join(args.work_dir, f'part_{idx}_train.csv'), train, args.models_per_pair)
-            save_dataset_to_csv(os.path.join(args.work_dir, f'part_{idx}_test.csv'), test, args.models_per_pair)
-            save_dataset_to_csv(os.path.join(args.work_dir, f'part_{idx}_val.csv'), val, args.models_per_pair)
+        split_by_cluster(dataset, args.work_dir, 5, 5, args.data_dir)
 
     else:
         save_dataset_to_csv(os.path.join(args.work_dir, 'datalist.csv'), dataset, args.models_per_pair)
@@ -133,5 +109,6 @@ if __name__ == '__main__':
     parser.add_argument('--edge_length', type=int, default=64, help='Edge length of the tensor')
     parser.add_argument('--threads', type=int, default=12, help='Number of threads running')
     parser.add_argument('--models_per_pair', type=int, default=5, help='Number of Alphafold multimer models generated per protein pair')
+    parser.add_argument('--seed', default=2032, type=int, help='Random seeds')
     args, unknown = parser.parse_known_args()
     main(args)

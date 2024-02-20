@@ -4,10 +4,10 @@ import random
 import numpy as np
 import tensorflow as tf
 
-from .augmentation import rotation3D
+from .augmentation import rotation3D, relocation
 
 
-def gen(dataset, batch_size, shuffle):
+def gen(dataset, batch_size, shuffle, augment=False):
     while 1:
         if shuffle:
             random.shuffle(dataset)
@@ -17,8 +17,10 @@ def gen(dataset, batch_size, shuffle):
             y = []
             for d in ds:
                 data = np.load(d[0])
-                if len(d) > 2:
-                    data = rotation3D(data, d[2])
+                if augment:
+                    data = rotation3D(data)
+                    data = relocation(data)
+
                 label = [0, 1] if int(d[1]) == 1 else [1, 0]
 
                 x.append(data)
@@ -29,15 +31,18 @@ def gen(dataset, batch_size, shuffle):
             yield [x, y]
 
 
-def get_dataset_from_csv(csv_path, data_dir):
-    x = []
-    y = []
+def get_dataset_from_csv(csv_path, data_dir, shuffle=False):
+    data = []
     with open(csv_path) as csvfile:
         spamreader = csv.reader(csvfile)
         for row in spamreader:
-            x.append(os.path.join(data_dir, row[0]))
-            y.append(row[1])
-    return [x, y]
+            x = os.path.join(data_dir, row[0])
+            y = row[1]
+            data.append([x, y])
+
+    if shuffle:
+            random.shuffle(data)
+    return data
 
 
 def save_dataset_to_csv(csv_path, dataset, models_per_pair=5):

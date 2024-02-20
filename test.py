@@ -10,7 +10,6 @@ import tensorflow as tf
 from sklearn.metrics import roc_curve, accuracy_score, confusion_matrix
 from sklearn import metrics
 
-from utils.augmentation import augmentation
 from utils.structure import getModel
 from utils.dataset import gen, get_dataset_from_csv
 
@@ -26,8 +25,7 @@ def main(args):
 
     print('---------------loading dataset---------------')
     input_size = [args.alength, args.alength, args.alength, args.ndims]
-    test_set_csv = get_dataset_from_csv(args.testset, args.datapath)
-    test_set = augmentation(test_set_csv, 0)
+    test_set = get_dataset_from_csv(args.test_set, args.datapath)
     print('---------------test---------------')
 
     model = getModel(args.model, input_size)
@@ -38,19 +36,17 @@ def main(args):
 
     model.compile(metrics=['accuracy', tf.keras.metrics.AUC()])
 
-    pred = model.predict_generator(generator=gen(test_set, args.batch, shuffle=False),
+    pred = model.predict_generator(generator=gen(test_set, args.batch, shuffle=False, augment=False),
                                      steps=math.ceil(len(test_set) / args.batch),
                                       workers=1,
                                       verbose=1)
 
     pred = np.array(pred)
-    # np.save(args.output, pred)
+    np.save(args.output, pred)
 
     pred_score = np.array([0.5 - i[0] / 2 if i[0] > i[1] else i[1] / 2 + 0.5 for i in pred])
-    confidence = np.array([abs(i[0] - i[1]) for i in pred])
-    np.save(args.output, np.array([pred_score, confidence]))
 
-    label = np.array([float(i) for i in test_set_csv[1]])
+    label = np.array([float(i[1]) for i in test_set])
 
     tn, fp, fn, tp = confusion_matrix(label, pred_score.round(0)).ravel()
     fpr, tpr, thresholds_keras = roc_curve(label, pred_score)
@@ -66,13 +62,12 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model', choices=['Resnet3D', 'DenseNet3DPPI', 'DenseNet3D'],
-                        default='DenseNet3DPPI', help='Backbone of the network')
+    parser.add_argument('--model', choices=['Resnet3D', 'DenseNet3D'], default='DenseNet3D', help='Backbone of the network')
     parser.add_argument('--datapath', type=str, default='./data/example_dataset/distance', help='Path to tensors')
     parser.add_argument('--weights', type=str,
                         default='./models/example_model/20231111-090154/best_model.hdf5')
     parser.add_argument('--output', type=str, default='./models/example_model/20231111-090154/preds.npy')
-    parser.add_argument('--testset', type=str, default='./data/example_dataset/part_0_test.csv')
+    parser.add_argument('--test_set', type=str, default='./data/example_dataset/part_0_test.csv')
 
     parser.add_argument('--batch', default=32)
     parser.add_argument('--alength', default=64)

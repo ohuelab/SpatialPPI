@@ -8,7 +8,6 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 
-from utils.augmentation import augmentation
 from utils.structure import getModel
 from utils.dataset import gen, get_dataset_from_csv
 from utils.record import saveConfig, drawFig
@@ -27,14 +26,9 @@ def main(args):
     print('---------------loading dataset---------------')
     input_size = [args.alength, args.alength, args.alength, args.ndims]
     train_set = get_dataset_from_csv(args.train_set, args.datapath)
-    val_set = get_dataset_from_csv(args.val_set, args.datapath)
+    test_set = get_dataset_from_csv(args.test_set, args.datapath)
 
-    print('dataset loaded, train set size', len(train_set[0]), 'test set size', len(val_set[0]))
-
-    print('---------------augmentation---------------')
-    train_set = augmentation(train_set, args.augment)
-    val_set = augmentation(val_set, 0)
-    print('dataset argumentation, train set size', len(train_set))
+    print('dataset loaded, train set size', len(train_set), 'test set size', len(test_set))
 
     print('---------------training---------------')
 
@@ -51,7 +45,7 @@ def main(args):
     monitor = f'val_{examine}'
 
     earlystopper = tf.keras.callbacks.EarlyStopping(
-        monitor=monitor, patience=10, verbose=1)
+        monitor=monitor, patience=20, verbose=1)
 
     save_best = tf.keras.callbacks.ModelCheckpoint(
         filepath=os.path.join(savingPath, "best_model.hdf5"), monitor=monitor, verbose=1, save_best_only=True)
@@ -72,11 +66,11 @@ def main(args):
                 metrics=[examine, tf.keras.metrics.AUC()])
 
 
-    history = model.fit_generator(generator=gen(train_set, args.batch, shuffle=True),
+    history = model.fit_generator(generator=gen(train_set, args.batch, shuffle=True, augment=args.augment),
                                 epochs=args.epoch,
                                 steps_per_epoch=math.ceil(len(train_set)/args.batch),
-                                validation_data=gen(val_set, args.batch, shuffle=False),
-                                validation_steps=math.ceil(len(val_set)/args.batch),
+                                validation_data=gen(test_set, args.batch, shuffle=False, augment=False),
+                                validation_steps=math.ceil(len(test_set)/args.batch),
                                 callbacks=[save_best, earlystopper, save_latest],
                                 workers=1,
                                 verbose=1
@@ -93,14 +87,14 @@ if __name__ == '__main__':
     parser.add_argument('--savingPath', type=str, default='./models/example_model', help='Path to save models')
 
     parser.add_argument('--train_set', type=str, default='./data/example_dataset/part_0_train.csv', help='Path to train set csv file')
-    parser.add_argument('--val_set', type=str, default='./data/example_dataset/part_0_val.csv', help='Path to val set csv file')
+    parser.add_argument('--test_set', type=str, default='./data/example_dataset/part_0_val.csv', help='Path to val set csv file')
 
-    parser.add_argument('--augment', type=int, default=24, help='value from 0-24 for argumentation, 0 for off')
-    parser.add_argument('--batch', default=32)
-    parser.add_argument('--alength', default=64, help='Tensor side length')
-    parser.add_argument('--ndims', default=8, help='Tensor dims')
-    parser.add_argument('--seed', default=2032, help='Random seeds')
-    parser.add_argument('--epoch', default=40, help='Epoch to train')
-    parser.add_argument('--lr', default=1e-5, help='Init learning rate')
+    parser.add_argument('--augment', type=bool, default=True, help='Use data augmentation')
+    parser.add_argument('--batch', default=32, type=int)
+    parser.add_argument('--alength', default=64, type=int, help='Tensor side length')
+    parser.add_argument('--ndims', default=8, type=int, help='Tensor dims')
+    parser.add_argument('--seed', default=2032, type=int, help='Random seeds')
+    parser.add_argument('--epoch', default=200, type=int, help='Epoch to train')
+    parser.add_argument('--lr', default=1e-4, type=float, help='Init learning rate')
     args, unknown = parser.parse_known_args()
     main(args)

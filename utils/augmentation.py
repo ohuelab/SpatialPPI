@@ -28,23 +28,23 @@ AUG_PARA = ['001001',
             '312301']
 
 
-def rotation3D(tensor, args):
-    if len(args):
-        argus = [int(args[i]) for i in range(len(args))]
-        tensor = np.rot90(tensor, k=argus[0], axes=(argus[1], argus[2]))
-        tensor = np.rot90(tensor, k=argus[3], axes=(argus[4], argus[5]))
+def rotation3D(tensor):
+    aug_arg = random.sample(AUG_PARA, 1)[0]
+    argus = [int(aug_arg[i]) for i in range(len(aug_arg))]
+    tensor = np.rot90(tensor, k=argus[0], axes=(argus[1], argus[2]))
+    tensor = np.rot90(tensor, k=argus[3], axes=(argus[4], argus[5]))
     return tensor
 
 
-def augmentation(ds, argument=1):
-    data = []
-    for i in range(len(ds[0])):
-        if argument:
-            args = random.sample(AUG_PARA, argument)
-        else:
-            args = ['']
-        for a in args:
-            data.append([ds[0][i], ds[1][i], a])
-    if argument:
-        random.shuffle(data)
-    return data
+def relocation(data):
+    dx = random.randint(-6, 6)
+    dy = random.randint(-6, 6)
+    dz = random.randint(-6, 6)
+    padding = 6
+    alen = data.shape[0]
+
+    new_data = np.zeros([alen+padding*2, alen+padding*2, alen+padding*2, data.shape[3]], dtype=data.dtype)
+    new_data[padding:padding+alen, padding:padding+alen, padding:padding+alen, :] = data
+    new_data = new_data[padding + dx: padding + alen + dx, padding + dy: padding + alen + dy, padding + dz: padding + alen + dz, :]
+
+    return new_data
