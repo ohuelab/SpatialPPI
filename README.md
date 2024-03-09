@@ -2,7 +2,7 @@
 
 ## Overview
 
-![flowchart-1695271438396-1](assets/flowchart-1695271438396-1.svg)
+![graphicalabstract](assets/ga.png)
 
 ## How to use
 
