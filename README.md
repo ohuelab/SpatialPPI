@@ -1,6 +1,5 @@
 # SpatialPPI: Three-dimensional Space Protein-Protein Interaction Prediction With AlphaFold Multimer
-
-## Overview
+[![License](https://img.shields.io/badge/License-Apache_2.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ![graphicalabstract](assets/ga.png)
 
@@ -70,11 +69,10 @@ python test.py \
 
 
 ## Resources
-
 The data splits and weights trained from 5-fold cross-validation can be download from [here](https://drive.google.com/file/d/1ovLlK9zz3DYVnphCe_dwRjau_cwxRsUV/view?usp=sharing).
 
+## License
+[![License](https://img.shields.io/badge/License-Apache_2.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## Citation
-
-If you find SpatialPPI useful, please consider citing our publication:
-
+- Hu W, Ohue M. **SpatialPPI: three-dimensional space protein-protein interaction prediction with AlphaFold Multimer**. _Computational and Structural Biotechnology Journal_, 2024. [doi: 10.1016/j.csbj.2024.03.009](https://doi.org/10.1016/j.csbj.2024.03.009)
